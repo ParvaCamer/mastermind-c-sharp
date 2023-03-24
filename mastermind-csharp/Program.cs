@@ -39,50 +39,101 @@
         }
     }
 
-    public static void ChangeDisplay(string[] array, string letter, int arg = 0)
-    {
-        if (arg < 2)
-        {
-            array[arg * 2] = letter;
-        }
-        else
-        {
-            array[(arg * 2) + 8] = letter;
-        }
-    }
-
     public static void GuessColors(string[] colors)
     {
-        string[] display = { "\n\t\t\t\ti", " ", "i", " ", "x", "-", "x", "-", "x", "-", "x", " ", "i", " ", "i\n" };
-        while (!(display[0] == "o" && display[2] == "o" && display[12] == "o" && display[14] == "o"))
+        bool loop = true;
+        while (loop)
         {
-            foreach (string d in display)
-            {
-                Console.Write(d);
-            }
+            int count = 0;
             Console.WriteLine("\nGuess the colors : \"o\" = good place | \"w\" = wrong place | \"i\" = non-existent color\n");
             Console.WriteLine("\t\t--> red green blue cyan magenta gray darkblue yellow <--");
             string[] colorPlayer = Console.ReadLine().Split(' ');
             CheckArray(colorPlayer);
-            display[0] = "i"; display[2] = "i"; display[12] = "i"; display[14] = "i";
-            for (int i = 0; i < colorPlayer.Length; i++)
-            {
-                display[(i * 2) + 4] = colorPlayer[i];
-            }
+
             for (int i = 0; i < colors.Length; i++)
             {
+                if (colors[i].Equals(colorPlayer[i]) && i < 2)
+                {
+                    count++;
+                    Console.Write(" o " + count);
+                    continue;
+                } 
+
                 for (int j = 0; j < colorPlayer.Length; j++)
                 {
-                    if (colors[i].Contains(colorPlayer[j]))
+                    if (colorPlayer[i].Equals(colors[j]) && i < 2)
                     {
-                        ChangeDisplay(display, "w", j);
+                        Console.Write(" w " + count);
+                        break;
+                    } 
+                    else
+                    {
+                        if (j == 3 && i < 2)
+                        {
+                            Console.Write(" i ");
+                        }  
                     }
                 }
-                if (colors[i].Equals(colorPlayer[i]))
+            }
+
+            for (int i = 0; i < colorPlayer.Length; i++)
+            {
+                switch (colorPlayer[i])
                 {
-                    ChangeDisplay(display, "o", i);
+                    case "red":
+                        Console.ForegroundColor = ConsoleColor.Red; break;
+                    case "green":
+                        Console.ForegroundColor = ConsoleColor.Green; break;
+                    case "blue":
+                        Console.ForegroundColor = ConsoleColor.Blue; break;
+                    case "cyan":
+                        Console.ForegroundColor = ConsoleColor.Cyan; break;
+                    case "magenta":
+                        Console.ForegroundColor = ConsoleColor.Magenta; break;
+                    case "gray":
+                        Console.ForegroundColor = ConsoleColor.Gray; break;
+                    case "darkblue":
+                        Console.ForegroundColor = ConsoleColor.DarkBlue; break;
+                    case "yellow":
+                        Console.ForegroundColor = ConsoleColor.Yellow; break;
+                }
+                Console.Write($"{colorPlayer[i]} ");
+            }
+            Console.ForegroundColor = ConsoleColor.Gray;
+
+            for (int i = 0; i < colors.Length; i++)
+            {
+                if (colors[i].Equals(colorPlayer[i]) && i >= 2)
+                {
+                    count++;
+                    Console.Write(" o " + count);
+                    
+                    continue;
+                }
+
+                for (int j = 0; j < colorPlayer.Length; j++)
+                {
+                    if (colorPlayer[i].Equals(colors[j]) && i >= 2)
+                    {
+                        Console.Write(" w " + count);
+                        break;
+                    }
+                    else
+                    {
+                        if (j == 3 && i >= 2)
+                        {
+                            Console.Write(" i ");
+                        }
+                    }
                 }
             }
+
+            if (count == 4)
+            {
+                Console.WriteLine("fini");
+                loop = false;
+            }
+            Console.WriteLine();
         }
         Console.WriteLine("\n--- Congratulations ! You won ! ---");
     }
